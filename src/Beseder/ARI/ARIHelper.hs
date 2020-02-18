@@ -117,9 +117,8 @@ simRingCall :: forall c1_name c2_name t_name m sp. Named c1_name -> Named c2_nam
 simRingCall call1Name call2Name  timerName makeCallReq1 makeCallReq2 timeoutSec = do
   startCall call1Name makeCallReq1
   startCall call2Name makeCallReq2
-  try @((c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) :&& 
-        (Not (c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))) $ do
-    delay timerName timeoutSec
+  try @(c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) $ do
+    skipWithTimeLimitTo timerName timeoutSec (Proxy @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))  
   on @(Not (c1_name :? IsCallConnected)) $ clear call1Name    
   onOrElse @(c2_name :? IsCallConnected) 
     (renameRes call2Name call1Name)
@@ -139,9 +138,8 @@ simRingCall2 :: forall c1_name c2_name t_name m sp. Named c1_name -> Named c2_na
 simRingCall2 call1Name call2Name  timerName makeCallReq1 makeCallReq2 timeoutSec = do
   startCall call1Name makeCallReq1
   startCall call2Name makeCallReq2
-  try @((c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) :&& 
-        (Not (c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))) $ do
-    delay timerName timeoutSec
+  try @(c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) $ do
+    skipWithTimeLimitTo timerName timeoutSec (Proxy @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))  
   on @(Not (c1_name :? IsCallConnected)) $ clear call1Name    
   on @(Not (c2_name :? IsCallConnected)) $ clear call2Name    
   label #simRing2Exit

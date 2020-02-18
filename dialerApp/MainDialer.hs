@@ -36,7 +36,7 @@ import           Data.Text
 import           Protolude                    hiding (Product, handle, return, gets, lift, liftIO,
                                                (>>), (>>=), forever, until, try, on)
 import DialTimerApp
-import SimRingCallApp2
+import SimRingCallApp
 import TwoWayCallApp
 import Utils
 
@@ -96,7 +96,7 @@ main3 = do
           { tech = SIP
           , prov = Provider "192.168.2.26"
           , callerID = Party ("100"::Text)
-          , dest = Party ("phn_201"::Text)
+          , dest = Party ("200"::Text)
           }
       makeCallReq3 = MakeCall 
           { tech = SIP
@@ -104,5 +104,5 @@ main3 = do
           , callerID = Party ("100"::Text)
           , dest = Party ("400"::Text)
           }
-  res <- runWithServerDataOnce cfg (simRingCallApp2 makeCallReq1 makeCallReq2 makeCallReq3 10 40)
+  res <- runWithServerDataOnce cfg (simRingCallApp makeCallReq1 makeCallReq2 makeCallReq3 10 40)
   print res 

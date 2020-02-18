@@ -27,12 +27,14 @@
 {-# LANGUAGE TemplateHaskell        #-}
 
 {-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
+{-# OPTIONS_GHC -freduction-depth=2000 #-}
 
 module  SimRingCallApp2 where
 
 import           Beseder.Base.ControlData
 import           Beseder.Base.Common
 import           Beseder.ARI.ARIHelper 
+--import           Beseder.ARI.ARIRunner
 import           Beseder.ARI.ARICallProv 
 import           Beseder.Resources.Timer
 import           Data.String
@@ -64,4 +66,6 @@ type SimRingCallApp2Res = Eval (SimRingCallApp2 NoSplitter '[()])
 -- :kind! SimRingCallApp2Val 
 
   
+--simRingCallApp2M orgMakeCallReq destMakeCallReq1 destMakeCallReq2 timeoutSec conTimeout = 
+--  ariTransFromData (simRingCallApp2 orgMakeCallReq destMakeCallReq1 destMakeCallReq2 timeoutSec conTimeout) 
   

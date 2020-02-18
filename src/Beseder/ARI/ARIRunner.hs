@@ -22,6 +22,7 @@ module Beseder.ARI.ARIRunner
     , runAriTransData
     , runWithServerDataOnce
     , initCallServerData
+    , ariTransFromData
     , IncomingTrans
     , IncomingTrans'
     , ARIDataFlow
@@ -86,6 +87,9 @@ runWithServerOnce cfg ariTrans = do
   runAriTrans ariEnv ariTrans    
 
 type ARIDataFlow f = STransData (AriM ()) NoSplitter f () 
+
+ariTransFromData :: (Interpretable (ContT Bool) (AriM ()) NoSplitter '[()] rs '[] f) => ARIDataFlow f -> STrans (ContT Bool) (AriM ()) NoSplitter '[()] rs '[] f ()
+ariTransFromData = interpret
 
 completeARITransFromData :: (Interpretable (ContT Bool) (AriM ()) NoSplitter '[()] '[()] '[] f) => ARIDataFlow f -> ARICompletrTrans f
 completeARITransFromData = interpret
