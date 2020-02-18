@@ -1,0 +1,102 @@
+name:                hs-ari-beseder
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/oofp/hs-ari-beseder#readme
+license:             OtherLicense
+license-file:        LICENSE
+author:              oofp
+maintainer:          oofp
+copyright:           2018-2020 oofp
+category:            Control
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+
+library
+  hs-source-dirs:      src
+  ghc-options:         -Wall
+  exposed-modules:     Beseder.ARI.ARIMonad
+                     , Beseder.ARI.ARIData
+                     , Beseder.ARI.ARIBridge
+                     , Beseder.ARI.ARICallProv
+                     , Beseder.ARI.ARIPlayerProv
+                     , Beseder.ARI.ARICallProvImpl
+                     , Beseder.ARI.ARIPlayerProvImpl
+                     , Beseder.ARI.ARIRunner
+                     , Beseder.ARI.ARIHelper
+                     , Beseder.ARI.DTMFContainer
+                     , Beseder.ARI.DTMFMonitor
+  other-modules:       
+  build-depends:       base >= 4.7 && < 5
+                     , protolude
+                     , lens
+                     , containers 
+                     , stm
+                     , mtl
+                     , text
+                     , beseder
+                     , hs-ari
+                     , haskus-utils
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude, DataKinds
+
+executable hs-ari-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N 
+  -- -dshow-passes
+  build-depends:       base
+                     , text
+                     , hs-ari
+                     , hs-ari-beseder
+                     , beseder
+                     , protolude 
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude, DataKinds
+
+executable DialerApp
+  hs-source-dirs:      dialerApp
+  main-is:             MainDialer.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N -O0 -dshow-passes
+  build-depends:       base
+                     , text
+                     , mtl
+                     , hs-ari
+                     , hs-ari-beseder
+                     , beseder
+                     , protolude 
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+executable IncomingApp
+  hs-source-dirs:      incomingApp
+  main-is:             IncomingTest.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N -O0 -dshow-passes  
+  build-depends:       base
+                     , text
+                     , mtl
+                     , hs-ari
+                     , hs-ari-beseder
+                     , beseder
+                     , protolude 
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+test-suite hs-ari-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , hs-ari
+                     , hs-ari-beseder
+                     , Beseder
+                     , protolude >= 0.1.6 && < 0.2
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+  default-extensions:  OverloadedStrings, NoImplicitPrelude
+
+source-repository head
+  type:     git
+  location: https://github.com/githubuser/SafeAri

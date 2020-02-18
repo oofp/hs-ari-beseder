@@ -1,0 +1,23 @@
+packages:
+- .
+extra-deps:
+- ../Beseder
+- ../hs-ari
+- subdirs:
+  - haskus-utils
+  - haskus-utils-data
+  - haskus-utils-types
+  - haskus-utils-variant
+  git: https://github.com/oofp/haskus-utlls_1.0_forked.git
+  commit: c346272ec449155ea2e2a0fb3a4c3f3b707a13a5
+- stm-containers-1.1.0.2
+- stm-hamt-1.2.0.2
+- primitive-extras-0.7.1
+- ekg-0.4.0.15@sha256:f52d7c00654d72d2ab988255f30adba95a52484ac310bab9c136c64732e69f4b
+- ekg-json-0.1.0.6@sha256:4ff2e9cac213a5868ae8b4a7c72a16a9a76fac14d944ae819b3d838a9725569b
+- monad-loops-stm-0.4
+- elm-bridge-0.5.1
+- wai-util-0.8@sha256:7181e748ccd405ecef5a586c954acb3d62b55b8eb7368efb5d80d6bf38e8211b
+- http-accept-0.2@sha256:c55935f6ff4984aee96ebc130cc9aa6919d322becb613c049a81203cec9fe65e
+- focus-1.0.1.3@sha256:adfb0c747394e5dc5d4839167b95f6f9673162b68eb7e7cf11ba39ddf648f8e8
+resolver: lts-14.1
