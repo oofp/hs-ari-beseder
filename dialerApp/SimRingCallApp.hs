@@ -44,19 +44,24 @@ simRingCallApp :: MakeCall -> MakeCall -> MakeCall -> Int -> Int -> STransData m
 simRingCallApp orgMakeCallReq destMakeCallReq1 destMakeCallReq2 timeoutSec conTimeout = do
   withConnectedCall #call1 #t1 orgMakeCallReq timeoutSec $ do
     invoke #call1 PlayRingback
-    simRingCall #call2 #call3 #tOut destMakeCallReq1 destMakeCallReq2 timeoutSec 
+    lb #simRing $ do
+      simRingCall #call2 #call3 #tOut destMakeCallReq1 destMakeCallReq2 timeoutSec 
     try @("call2" :? IsCallAlive) $ do
       invoke #call1 StopRingback
-      bridgeTwoCalls #call1 #call2 #bridge
-      label #connected
-      delay #tCon conTimeout 
+      lb #connected $ do
+        bridgeTwoCalls #call1 #call2 #bridge
+        label #connected
+        delay #tCon conTimeout 
 
 mkSTransDataTypeAny "simRingCallApp" "SimRingCallApp"
 
 type SimRingCallAppVal = ValidateSteps '["connected"] SimRingCallApp NoSplitter '[()]
 type SimRingCallAppRes = Eval (SimRingCallApp NoSplitter '[()])
+type SimRingCallAppDiagram = StateDiagramSym SimRingCallApp '[()]
 -- :kind! SimRingCallAppRes
 -- :kind! SimRingCallAppVal 
+-- :kind! SimRingCallAppDiagram 
+
 
   
   

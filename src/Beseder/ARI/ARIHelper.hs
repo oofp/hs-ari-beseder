@@ -67,15 +67,19 @@ withOutBoundCall callName makeCallReq hnd = scopeRes $ do
   startCall callName makeCallReq
   try @(name :? IsCallAlive) $ hnd
 
+connectCall' :: forall name m sp. Named name -> MakeCall -> STransData m sp _ () 
+connectCall' callName makeCallReq = do
+  startCall callName makeCallReq
+  try @(name :? IsCallAlive) $ do
+    skipTo @(name :? IsCallConnected) 
+
 connectCall :: forall name m sp. Named name -> MakeCall -> STransData m sp _ () 
 connectCall callName makeCallReq = do
-  startCall callName makeCallReq
-  try @(name :? IsCallAlive :&& (Not (name :? IsCallConnected))) 
-    pumpEvents
+  connectCall' callName makeCallReq
   on @(Not (name :? IsCallConnected)) $ clear callName
 
-connectCall' = connectCall #callName
-mkSTransDataTypeAny "connectCall'" "ConnectCall"
+connectCall'' = connectCall #callName
+mkSTransDataTypeAny "connectCall''" "ConnectCall"
 
 type ConnectCallVal = ValidateSteps '[] ConnectCall NoSplitter '[()]
 type ConnectCallRes = Eval (ConnectCall NoSplitter '[()])
@@ -85,7 +89,7 @@ type ConnectCallRes = Eval (ConnectCall NoSplitter '[()])
 connectCallTimer :: forall c_name t_name m sp. Named c_name -> Named t_name -> MakeCall -> Int -> STransData m sp _ () 
 connectCallTimer callName timerName makeCallReq connectTimeoutSec = do
   withTimeLimit timerName connectTimeoutSec 
-                  (connectCall callName  makeCallReq)
+                  (connectCall' callName  makeCallReq)
   on @(By c_name :&& (Not (c_name :? IsCallConnected))) (clear callName)
   label #conectCallDone
 
@@ -118,7 +122,7 @@ simRingCall call1Name call2Name  timerName makeCallReq1 makeCallReq2 timeoutSec 
   startCall call1Name makeCallReq1
   startCall call2Name makeCallReq2
   try @(c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) $ do
-    skipWithTimeLimitTo timerName timeoutSec (Proxy @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))  
+    skipWithTimeLimitTo @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected) timerName timeoutSec
   on @(Not (c1_name :? IsCallConnected)) $ clear call1Name    
   onOrElse @(c2_name :? IsCallConnected) 
     (renameRes call2Name call1Name)
@@ -139,9 +143,10 @@ simRingCall2 call1Name call2Name  timerName makeCallReq1 makeCallReq2 timeoutSec
   startCall call1Name makeCallReq1
   startCall call2Name makeCallReq2
   try @(c1_name :? IsCallAlive :|| c2_name :? IsCallAlive) $ do
-    skipWithTimeLimitTo timerName timeoutSec (Proxy @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected))  
-  on @(Not (c1_name :? IsCallConnected)) $ clear call1Name    
-  on @(Not (c2_name :? IsCallConnected)) $ clear call2Name    
+    skipWithTimeLimitTo @(c1_name :? IsCallConnected :|| c2_name :? IsCallConnected) timerName timeoutSec 
+  block $ do  
+    on @(Not (c1_name :? IsCallConnected)) $ clear call1Name    
+    on @(Not (c2_name :? IsCallConnected)) $ clear call2Name    
   label #simRing2Exit
 
 simRingCall2' = simRingCall2 #c1 #c2 #timer
